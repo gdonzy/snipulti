@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 class ViewContentProvider implements IStructuredContentProvider,
 		ITreeContentProvider {
-	private TreeParent invisibleRoot;
+	private SnippetFileSuperListNode invisibleRoot;
 	private SnipultiView sv;
 
 	public ViewContentProvider(SnipultiView snipultiView) {
@@ -29,8 +29,8 @@ class ViewContentProvider implements IStructuredContentProvider,
 	}
 
 	public Object getParent(Object child) {
-		if (child instanceof TreeObject) {
-			return ((TreeObject) child).getParent();
+		if (child instanceof SnippetObject) {
+			return ((SnippetObject) child).getParent();
 		}
 		return null;
 	}
@@ -53,23 +53,23 @@ class ViewContentProvider implements IStructuredContentProvider,
 	 * code, you will connect to a real model and expose its hierarchy.
 	 */
 	private void initialize() {
-		TreeObject to1 = new TreeObject("Leaf 1");
-		TreeObject to2 = new TreeObject("Leaf 2");
-		TreeObject to3 = new TreeObject("Leaf 3");
-		TreeParent p1 = new TreeParent("Parent 1");
+		SnippetObject to1 = new SnippetObject("Leaf 1");
+		SnippetObject to2 = new SnippetObject("Leaf 2");
+		SnippetObject to3 = new SnippetObject("Leaf 3");
+		SnippetFileNode p1 = new SnippetFileNode("Parent 1");
 		p1.addChild(to1);
 		p1.addChild(to2);
 		p1.addChild(to3);
 
-		TreeObject to4 = new TreeObject("Leaf 4");
-		TreeParent p2 = new TreeParent("Parent 2");
+		SnippetObject to4 = new SnippetObject("Leaf 4");
+		SnippetFileNode p2 = new SnippetFileNode("Parent 2");
 		p2.addChild(to4);
 
-		TreeParent root = new TreeParent("Root");
+		SnippetFileListNode root = new SnippetFileListNode("Root");
 		root.addChild(p1);
 		root.addChild(p2);
 
-		invisibleRoot = new TreeParent("");
+		invisibleRoot = new SnippetFileSuperListNode("");
 		invisibleRoot.addChild(root);
 	}
 }
