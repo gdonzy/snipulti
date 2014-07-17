@@ -11,9 +11,13 @@ class ViewLabelProvider extends LabelProvider {
 		return obj.toString();
 	}
 	public Image getImage(Object obj) {
-		String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-		if (obj instanceof TreeParent)
+		String imageKey;
+		if (obj instanceof SnippetFileNode) 
+			imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+		else if (obj instanceof TreeParent)
 		   imageKey = ISharedImages.IMG_OBJ_FOLDER;
+		else 
+           imageKey = ISharedImages.IMG_OBJ_ADD;
 		return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 	}
 }

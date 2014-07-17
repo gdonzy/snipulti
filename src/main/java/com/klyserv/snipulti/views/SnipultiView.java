@@ -1,5 +1,9 @@
 package com.klyserv.snipulti.views;
 
+import java.io.File;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -7,6 +11,9 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -16,11 +23,20 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class SnipultiView extends ViewPart {
 
@@ -31,8 +47,8 @@ public class SnipultiView extends ViewPart {
 
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private Action action1;
-	private Action action2;
+	private Action editAction;
+	private Action reloadAction;
 	private Action doubleClickAction;
 
 	/**
@@ -81,14 +97,14 @@ public class SnipultiView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
+		manager.add(editAction);
 		manager.add(new Separator());
-		manager.add(action2);
+		manager.add(reloadAction);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(editAction);
+		manager.add(reloadAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -96,37 +112,88 @@ public class SnipultiView extends ViewPart {
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(editAction);
+		manager.add(reloadAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
-		action1 = new Action() {
+		editAction = new Action() {
 			public void run() {
-				showMessage("Action 1 executed");
+				ISelection selection = viewer.getSelection();
+				Object obj = ((IStructuredSelection)selection).getFirstElement();
+                // showMessage("Double-click detected on "+obj.toString());
+				if(obj instanceof SnippetObject) {
+					SnippetObject so=(SnippetObject)obj;
+					if(so.getParent() instanceof SnippetFileNode) {
+						SnippetFileNode snf=(SnippetFileNode) so.getParent();
+						edit(snf.getFile());
+					}
+				} if(obj instanceof SnippetFileNode) {
+					edit(((SnippetFileNode)obj).getFile());
+				}
+			}
+
+			private void edit(File fileToOpen) {
+				if (fileToOpen.exists() && fileToOpen.isFile()) {
+				    IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI());
+				    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				 
+				    try {
+				        IDE.openEditorOnFileStore( page, fileStore );
+				    } catch ( PartInitException e ) {
+				        //Put your exception handler here if you wish to
+				    }
+				} else {
+				    //Do something if the file does not exist
+				}	
 			}
 		};
-		action1.setText("Add new");
-		action1.setToolTipText("This will add a new snippet");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		editAction.setText("Edit");
+		editAction.setToolTipText("This will add a new snippet");
+		editAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
-		action2 = new Action() {
+		reloadAction = new Action() {
 			public void run() {
-				showMessage("Action 2 executed");
+				showMessage("Reload action coming soon to the stores near you");
 			}
 		};
-		action2.setText("Refresh");
-		action2.setToolTipText("Refresh contents from file");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		reloadAction.setText("Reload");
+		reloadAction.setToolTipText("Refresh contents from file");
+		reloadAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+				getImageDescriptor(ISharedImages.IMG_ELCL_SYNCED));
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
+                // showMessage("Double-click detected on "+obj.toString());
+				if(obj instanceof SnippetObject) {
+					//showMessage("Text to insert:"+((SnippetObject)obj).getSnippet().getSnippetText());
+					insertText(((SnippetObject)obj).getSnippet().getSnippetText());
+				}
+			}
+
+			private void insertText(String snippetText) {
+				IWorkbench wb = PlatformUI.getWorkbench();
+				IWorkbenchWindow window = wb.getActiveWorkbenchWindow();
+				IWorkbenchPage page = window.getActivePage();
+				IEditorPart part = page.getActiveEditor();
+				if (!(part instanceof AbstractTextEditor))
+					return;
+				ITextEditor editor = (ITextEditor) part;
+				ISelection selection= editor.getSelectionProvider().getSelection();
+				int offset=0;
+				if (selection instanceof ITextSelection)
+					offset=((ITextSelection) selection).getOffset();
+				IDocumentProvider dp = editor.getDocumentProvider();
+				IDocument doc = dp.getDocument(editor.getEditorInput());
+				try {
+					doc.replace(offset, 0, snippetText);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
 			}
 		};
 	}

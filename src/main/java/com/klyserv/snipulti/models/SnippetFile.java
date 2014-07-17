@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,16 +28,23 @@ public class SnippetFile {
 	public SnippetFile(File snipFile) {
 		this.snipFile = snipFile;
 		Map<String, Snippet> m = new HashMap<String, Snippet>();
+		snippets=m;
 		try {
-			@SuppressWarnings("resource")
-			String content = (new Scanner(snipFile)).useDelimiter("\\Z").next();
+			String content="";
+			try {
+                @SuppressWarnings("resource")
+                String content1 = (new Scanner(snipFile)).useDelimiter("\\Z").next();
+                content=content1;
+			} catch( NoSuchElementException ex) {
+				// empty file ignore error
+				return;
+			}
 
 			Matcher mx=p.matcher(content);
 			while(mx.find()) {
 				Snippet s=new Snippet(mx.group(1));
 				m.put(s.getName(), s);
 			}
-			snippets = m;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

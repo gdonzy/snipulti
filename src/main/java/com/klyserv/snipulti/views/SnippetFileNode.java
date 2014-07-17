@@ -18,6 +18,10 @@ public class SnippetFileNode extends TreeParent {
 	public SnippetFileNode(SnippetFile sf) {
 		this(sf.getFile());
 	}
+	
+	public File getFile() {
+		return snipFile;
+	}
 
 	/* default */ void loadFile() {
 		SnippetFile sf=new SnippetFile(snipFile);
