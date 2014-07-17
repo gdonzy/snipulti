@@ -55,13 +55,9 @@ class ViewContentProvider implements IStructuredContentProvider,
 	 * code, you will connect to a real model and expose its hierarchy.
 	 */
 	private void initialize() {
-		SnippetFileNode p1 = new SnippetFileNode(new File("/tmp/a.txt"));
+		String homeDirectory=System.getProperty("user.home");
 
-		SnippetFileNode p2 = new SnippetFileNode(new File("/tmp/b.txt"));
-
-		SnippetFileListNode root = new SnippetFileListNode("Root");
-		root.addChild(p1);
-		root.addChild(p2);
+		SnippetDirectoryNode root = new SnippetDirectoryNode(new File(homeDirectory, "snips"));
 
 		invisibleRoot = new SnippetFileSuperListNode("");
 		invisibleRoot.addChild(root);

@@ -15,6 +15,10 @@ public class SnippetFileNode extends TreeParent {
 		loadFile();
 	}
 	
+	public SnippetFileNode(SnippetFile sf) {
+		this(sf.getFile());
+	}
+
 	/* default */ void loadFile() {
 		SnippetFile sf=new SnippetFile(snipFile);
 		Map<String, Snippet> snipList=sf.getSnippets();

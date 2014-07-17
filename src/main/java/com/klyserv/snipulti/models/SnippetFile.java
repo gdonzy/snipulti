@@ -1,27 +1,57 @@
 package com.klyserv.snipulti.models;
 
 import java.io.File;
-import java.util.Arrays;
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SnippetFile {
-	
-	private Map<String,Snippet> snippets;
+
+	private Map<String, Snippet> snippets;
 	private File snipFile;
 	
+	static Pattern p;
+	
+	static {
+		try {
+           p=Pattern.compile(Snippet.REGULAREXP,Pattern.MULTILINE);
+		} catch( Throwable e) {
+		   p=null;	
+		}
+	}
+
 	public SnippetFile(File snipFile) {
-		this.snipFile=snipFile;
-		Map<String,Snippet> m=new HashMap<String, Snippet>();
-		m.put("snip1", new Snippet("snip1", "snip text 1"));
-		m.put("snip2", new Snippet("snip2", "snip text 2"));
-		snippets=m;
+		this.snipFile = snipFile;
+		Map<String, Snippet> m = new HashMap<String, Snippet>();
+		try {
+			@SuppressWarnings("resource")
+			String content = (new Scanner(snipFile)).useDelimiter("\\Z").next();
+
+			Matcher mx=p.matcher(content);
+			while(mx.find()) {
+				Snippet s=new Snippet(mx.group(1));
+				m.put(s.getName(), s);
+			}
+			snippets = m;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Map<String, Snippet> getSnippets() {
 		return Collections.unmodifiableMap(snippets);
+	}
+
+	public String getName() {
+		return snipFile.getName();
+	}
+
+	public File getFile() {
+		return snipFile;
 	}
 
 }
