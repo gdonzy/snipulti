@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Snipulti Category"
+            id="com.klyserv.snipulti">
+      </category>
+      <view
+            name="Snipulti View"
+            icon="icons/sample.gif"
+            category="com.klyserv.snipulti"
+            class="com.klyserv.snipulti.views.SnipultiView"
+            id="com.klyserv.snipulti.views.SnipultiView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.ProblemView"
+               relationship="right"
+               id="com.klyserv.snipulti.views.SnipultiView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+
+</plugin>
