@@ -1,5 +1,7 @@
 package com.klyserv.snipulti.views;
 
+import java.io.File;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -53,17 +55,9 @@ class ViewContentProvider implements IStructuredContentProvider,
 	 * code, you will connect to a real model and expose its hierarchy.
 	 */
 	private void initialize() {
-		SnippetObject to1 = new SnippetObject("Leaf 1");
-		SnippetObject to2 = new SnippetObject("Leaf 2");
-		SnippetObject to3 = new SnippetObject("Leaf 3");
-		SnippetFileNode p1 = new SnippetFileNode("Parent 1");
-		p1.addChild(to1);
-		p1.addChild(to2);
-		p1.addChild(to3);
+		SnippetFileNode p1 = new SnippetFileNode(new File("/tmp/a.txt"));
 
-		SnippetObject to4 = new SnippetObject("Leaf 4");
-		SnippetFileNode p2 = new SnippetFileNode("Parent 2");
-		p2.addChild(to4);
+		SnippetFileNode p2 = new SnippetFileNode(new File("/tmp/b.txt"));
 
 		SnippetFileListNode root = new SnippetFileListNode("Root");
 		root.addChild(p1);

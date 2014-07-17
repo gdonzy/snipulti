@@ -22,25 +22,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
-
-/**
- * This sample class demonstrates how to plug-in a new
- * workbench view. The view shows data obtained from the
- * model. The sample creates a dummy model on the fly,
- * but a real implementation would connect to the model
- * available either in this or another plug-in (e.g. the workspace).
- * The view is connected to the model using a content provider.
- * <p>
- * The view uses a label provider to define how model
- * objects should be presented in the view. Each
- * view can present the same model objects using
- * different labels and icons, if needed. Alternatively,
- * a single label provider can be shared between views
- * in order to ensure that objects of the same type are
- * presented in the same way everywhere.
- * <p>
- */
-
 public class SnipultiView extends ViewPart {
 
 	/**
@@ -53,17 +34,6 @@ public class SnipultiView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
-	
 
 	/**
 	 * The constructor.
@@ -138,8 +108,8 @@ public class SnipultiView extends ViewPart {
 				showMessage("Action 1 executed");
 			}
 		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
+		action1.setText("Add new");
+		action1.setToolTipText("This will add a new snippet");
 		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
@@ -148,8 +118,8 @@ public class SnipultiView extends ViewPart {
 				showMessage("Action 2 executed");
 			}
 		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
+		action2.setText("Refresh");
+		action2.setToolTipText("Refresh contents from file");
 		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
@@ -181,4 +151,5 @@ public class SnipultiView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+	
 }
