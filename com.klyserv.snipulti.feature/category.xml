@@ -3,5 +3,5 @@
    <bundle id="com.klyserv.snipulti" version="1.0.0.qualifier">
       <category name="snipulti"/>
    </bundle>
-   <category-def name="snipulti" label="plugincategory"/>
+   <category-def name="snipulti" label="snipulti"/>
 </site>
