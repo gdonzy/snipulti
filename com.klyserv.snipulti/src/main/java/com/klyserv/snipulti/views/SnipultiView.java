@@ -50,6 +50,7 @@ public class SnipultiView extends ViewPart {
 	private Action editAction;
 	private Action reloadAction;
 	private Action doubleClickAction;
+	private ViewContentProvider vcp;
 
 	/**
 	 * The constructor.
@@ -64,7 +65,8 @@ public class SnipultiView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider(this));
+		vcp=new ViewContentProvider(this);
+		viewer.setContentProvider(vcp);
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
@@ -151,13 +153,14 @@ public class SnipultiView extends ViewPart {
 			}
 		};
 		editAction.setText("Edit");
-		editAction.setToolTipText("This will add a new snippet");
+		editAction.setToolTipText("This will open the snippet file for editor");
 		editAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
 		reloadAction = new Action() {
 			public void run() {
-				showMessage("Reload action coming soon to the stores near you");
+				SnipultiView.this.vcp.reload();
+				SnipultiView.this.viewer.refresh();
 			}
 		};
 		reloadAction.setText("Reload");

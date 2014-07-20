@@ -49,17 +49,21 @@ class ViewContentProvider implements IStructuredContentProvider,
 			return ((TreeParent) parent).hasChildren();
 		return false;
 	}
-
-	/*
-	 * We will set up a dummy model to initialize tree heararchy. In a real
-	 * code, you will connect to a real model and expose its hierarchy.
-	 */
-	private void initialize() {
+	
+	public void reload() {
 		String homeDirectory=System.getProperty("user.home");
 
 		SnippetDirectoryNode root = new SnippetDirectoryNode(new File(homeDirectory, "snips"));
 
 		invisibleRoot = new SnippetFileSuperListNode("");
 		invisibleRoot.addChild(root);
+	}
+
+	/*
+	 * We will set up a dummy model to initialize tree hierarchy. In a real
+	 * code, you will connect to a real model and expose its hierarchy.
+	 */
+	private void initialize() {
+		reload();
 	}
 }
