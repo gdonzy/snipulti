@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
    <bundle id="com.klyserv.snipulti" version="1.0.0.qualifier">
-      <category name="snipulti"/>
+      <category name="snipulti-core"/>
    </bundle>
-   <category-def name="snipulti" label="snipulti"/>
+   <category-def name="snipulti-core" label="snipulti"/>
 </site>

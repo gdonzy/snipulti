@@ -208,6 +208,8 @@ public class SnipultiView extends ViewPart {
 			}
 		});
 	}
+	
+	@SuppressWarnings("unused")
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
